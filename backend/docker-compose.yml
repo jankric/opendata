@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: opendata_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./storage:/app/storage
+      - ./public/uploads:/app/public/uploads
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+    depends_on:
+      - db
+      - redis
+    networks:
+      - opendata_network
+
+  db:
+    image: postgres:16-alpine
+    container_name: opendata_db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: opendata_portal
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - opendata_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: opendata_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - opendata_network
+
+  horizon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: opendata_horizon
+    restart: unless-stopped
+    command: php artisan horizon
+    volumes:
+      - ./storage:/app/storage
+    depends_on:
+      - db
+      - redis
+    networks:
+      - opendata_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  opendata_network:
+    driver: bridge
