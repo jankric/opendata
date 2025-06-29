@@ -13,9 +13,19 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            \App\Filament\Widgets\StatsOverview::class,
+            \App\Filament\Widgets\AdvancedStatsOverview::class,
             \App\Filament\Widgets\DatasetChart::class,
+            \App\Filament\Widgets\PopularDatasetsChart::class,
             \App\Filament\Widgets\LatestDatasets::class,
+            \App\Filament\Widgets\RecentActivity::class,
+        ];
+    }
+
+    public function getColumns(): int | string | array
+    {
+        return [
+            'md' => 2,
+            'xl' => 4,
         ];
     }
 }

@@ -7,6 +7,8 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\ServiceProvider;
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 
 class FilamentServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,16 @@ class FilamentServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Set Filament colors
+        FilamentColor::register([
+            'danger' => Color::Red,
+            'gray' => Color::Slate,
+            'info' => Color::Blue,
+            'primary' => Color::Red,
+            'success' => Color::Emerald,
+            'warning' => Color::Orange,
+        ]);
+
         Filament::serving(function () {
             // Custom CSS for admin panel
             FilamentAsset::register([
@@ -34,11 +46,17 @@ class FilamentServiceProvider extends ServiceProvider
                     ->items([
                         \App\Filament\Resources\DatasetResource::class,
                         \App\Filament\Resources\CategoryResource::class,
+                        \App\Filament\Resources\TagResource::class,
+                        \App\Filament\Resources\GroupResource::class,
                     ]),
                 NavigationGroup::make('User Management')
                     ->items([
                         \App\Filament\Resources\UserResource::class,
                         \App\Filament\Resources\OrganizationResource::class,
+                    ]),
+                NavigationGroup::make('System')
+                    ->items([
+                        \App\Filament\Resources\ActivityResource::class,
                     ]),
             ];
         });

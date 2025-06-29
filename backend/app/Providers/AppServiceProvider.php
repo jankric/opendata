@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Pagination\Paginator;
+use Filament\Support\Facades\FilamentView;
+use Illuminate\Contracts\View\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,6 +37,12 @@ class AppServiceProvider extends ServiceProvider
 
         // Register custom validation rules
         $this->registerCustomValidationRules();
+
+        // Filament customizations
+        FilamentView::registerRenderHook(
+            'panels::body.end',
+            fn (): View => view('filament.footer'),
+        );
     }
 
     private function registerCustomValidationRules(): void

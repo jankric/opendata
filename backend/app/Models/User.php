@@ -50,7 +50,7 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         // Allow access to admin panel for users with admin roles
-        return $this->hasAnyRole(['super-admin', 'organization-admin', 'reviewer']);
+        return $this->hasAnyRole(['super-admin', 'organization-admin', 'reviewer', 'publisher']);
     }
 
     public function organization(): BelongsTo
@@ -138,5 +138,15 @@ class User extends Authenticatable implements FilamentUser
         }
 
         return false;
+    }
+
+    public function getFilamentName(): string
+    {
+        return $this->name;
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url;
     }
 }
